@@ -14,9 +14,6 @@ module Stemcell
                      enable_rdp: false,
                      enable_kms: false,
                      kms_host: '',
-                     http_proxy:,
-                     https_proxy:,
-                     bypass_list:,
                      **args)
         @source_path = source_path
         @administrator_password = administrator_password
@@ -25,9 +22,6 @@ module Stemcell
         @enable_rdp = enable_rdp
         @enable_kms = enable_kms
         @kms_host = kms_host
-        @http_proxy = http_proxy
-        @https_proxy = https_proxy
-        @bypass_list = bypass_list
         super(args)
       end
     end
@@ -50,10 +44,7 @@ module Stemcell
           output_directory: @output_directory,
           mem_size: @mem_size,
           num_vcpus: @num_vcpus,
-          os: @os,
-          http_proxy: @http_proxy,
-          https_proxy: @https_proxy,
-          bypass_list: @bypass_list
+          os: @os
         ).dump
       end
     end
@@ -96,10 +87,7 @@ module Stemcell
           kms_host: @kms_host,
           enable_kms: @enable_kms,
           enable_rdp: @enable_rdp,
-          skip_windows_update: @skip_windows_update,
-          http_proxy: @http_proxy,
-          https_proxy: @https_proxy,
-          bypass_list: @bypass_list
+          skip_windows_update: @skip_windows_update
         ).dump
       end
 
