@@ -41,8 +41,7 @@ describe Stemcell::Manifest do
               'region1' => 'ami1',
               'region2' => 'ami2'
             }
-          },
-          'stemcell_formats' => 'aws-light'
+          }
         )
       end
     end
@@ -61,8 +60,7 @@ describe Stemcell::Manifest do
           'cloud_properties' => {
             'infrastructure' => 'google',
             'image_url' => 'https://google.com/stemcell'
-          },
-          'stemcell_formats' => 'google-light'
+          }
         )
       end
     end
@@ -106,8 +104,7 @@ describe Stemcell::Manifest do
               'sku' => 'some-sku',
               'version' => '1.0.000001'
             }
-          },
-          'stemcell_formats' => 'azure-light'
+          }
         )
       end
     end
