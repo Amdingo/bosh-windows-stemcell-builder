@@ -110,11 +110,10 @@ module Packer
       end
 
       def self.git_exe
-        {
-          'type' => 'file',
-          'source' => File.join(Stemcell::Builder::validate_env_dir('STEMCELL_DEPS_DIR'), 'git', 'git.exe'),
-          'destination' => 'C:\\Git\\cmd\\git.exe'
-        }.freeze
+        installer = File.join(Stemcell::Builder::validate_env_dir('STEMCELL_DEPS_DIR'), 'git', 'Git-2.16.2-64-bit.exe')
+        return [
+            powershell_provisioner( "#{installer} /sp /silent")
+        ]
       end
 
       def self.sysprep_shutdown(iaas, os)
