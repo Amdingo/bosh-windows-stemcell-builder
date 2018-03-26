@@ -110,9 +110,13 @@ module Packer
       end
 
       def self.git_exe
-        installer = File.join(Stemcell::Builder::validate_env_dir('STEMCELL_DEPS_DIR'), 'git', 'Git-2.16.2-64-bit.exe')
         return [
-            powershell_provisioner( "#{installer} /sp /silent")
+            {
+                'type' => 'file',
+                'source' => File.join(Stemcell::Builder::validate_env_dir('STEMCELL_DEPS_DIR'), 'git', 'Git-2.16.2-64-bit.exe'),
+                'destination' => 'C:\\provision\\Git-2.16.2-64-bit.exe'
+            },
+            powershell_provisioner( "C:\\provision\\Git-2.16.2-64-bit.exe /sp /silent")
         ]
       end
 
