@@ -40,6 +40,7 @@ module Packer
       def provisioners
         [
           Base.pre_provisioners(@os, reduce_mtu: true, iaas: 'gcp'),
+          Provisioners::git_exe,
           Provisioners::lgpo_exe,
           Provisioners.install_agent('gcp').freeze,
           Provisioners.download_windows_updates(@output_directory).freeze,

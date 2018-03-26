@@ -109,6 +109,14 @@ module Packer
         }.freeze
       end
 
+      def self.git_exe
+        {
+          'type' => 'file',
+          'source' => File.join(Stemcell::Builder::validate_env_dir('STEMCELL_DEPS_DIR'), 'git', 'git.exe'),
+          'destination' => 'C:\\Git\\cmd\\git.exe'
+        }.freeze
+      end
+
       def self.sysprep_shutdown(iaas, os)
         return [powershell_provisioner("Invoke-Sysprep -IaaS #{iaas} -OsVersion #{os}")]
       end
