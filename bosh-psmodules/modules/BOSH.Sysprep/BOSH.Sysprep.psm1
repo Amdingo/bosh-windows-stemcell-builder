@@ -18,17 +18,17 @@ function Enable-LocalSecurityPolicy {
         Write-Error "Generating policy: Machine"
     }
 
-    $UserDir="$PolicySource/DomainSysvol/GPO/User"
-    LGPO.exe /r "$UserDir/registry.txt" /w "$UserDir/registry.pol"
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Generating policy: User"
-    }
+    # $UserDir="$PolicySource/DomainSysvol/GPO/User"
+    # LGPO.exe /r "$UserDir/registry.txt" /w "$UserDir/registry.pol"
+    # if ($LASTEXITCODE -ne 0) {
+    #     Write-Error "Generating policy: User"
+    # }
 
-    # Apply policies
-    LGPO.exe /g "$PolicySource/DomainSysvol" /v
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Applying policy: $PolicySource/DomainSysvol"
-    }
+    # # Apply policies
+    # LGPO.exe /g "$PolicySource/DomainSysvol" /v
+    # if ($LASTEXITCODE -ne 0) {
+    #     Write-Error "Applying policy: $PolicySource/DomainSysvol"
+    # }
 
     Write-Log "Ending LocalSecurityPolicy"
 }
