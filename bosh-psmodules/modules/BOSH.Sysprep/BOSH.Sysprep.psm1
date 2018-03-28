@@ -24,7 +24,7 @@ function Enable-LocalSecurityPolicy {
         Write-Error "Generating policy: User"
     }
 
-     Apply policies
+#     Apply policies
      LGPO.exe /g "$PolicySource/DomainSysvol" /v
      if ($LASTEXITCODE -ne 0) {
          Write-Error "Applying policy: $PolicySource/DomainSysvol"
