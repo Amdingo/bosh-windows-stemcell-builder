@@ -205,11 +205,11 @@ module Stemcell
       # we can change this when govmami has the export feature https://github.com/vmware/govmomi/pull/813 or maby intergrate
       # in vpshere plugin see https://github.com/jetbrains-infra/packer-builder-vsphere/issues/34
       def export_vmdk
-        folder = validate_env('VCENTER_VM_FOLDER')
-        host_folder = validate_env('VCENTER_HOST_FOLDER')
-        server = validate_env('VCENTER_SERVER')
-        username = validate_env('VCENTER_USERNAME')
-        password = validate_env('VCENTER_PASSWORD')
+        folder = Stemcell::Builder::validate_env('VCENTER_VM_FOLDER')
+        host_folder = Stemcell::Builder::validate_env('VCENTER_HOST_FOLDER')
+        server = Stemcell::Builder::validate_env('VCENTER_SERVER')
+        username = Stemcell::Builder::validate_env('VCENTER_USERNAME')
+        password = Stemcell::Builder::validate_env('VCENTER_PASSWORD')
         cmd = "ovftool --noSSLVerify --machineOutput \"vi://#{username}:#{password}@#{server}/#{host_folder}/vm/#{folder}/packer-vcenter/\" #{$dir}/"
         puts cmd
         Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
@@ -226,37 +226,6 @@ module Stemcell
         puts "running stembuild command: [[ #{cmd} ]]"
         `#{cmd}`
       end
-
-      administrator_password = validate_env('ADMINISTRATOR_PASSWORD')
-
-      # version should be agent/p_modules number from github
-      # windows update versioning? how do we check/compare?
-      versionfile = File.join(Dir.pwd, 'build', 'version')
-      version = IO.read(versionfile).chomp
-
-      sourcedir = '/root/packer-vcenter/'#File.join(Dir.pwd, 'packer-vcenter')
-
-      vcenter = VCenter.new(
-        mem_size: ENV.fetch('MEM_SIZE', '4096'),
-        num_vcpus: ENV.fetch('NUM_VCPUS', '4'),
-        source_path: sourcedir,
-        agent_commit: 'bar',
-        administrator_password: administrator_password,
-        new_password: ENV.fetch('NEW_PASSWORD', administrator_password),
-        product_key: ENV['PRODUCT_KEY'],
-        owner: validate_env('OWNER'),
-        organization: validate_env('ORGANIZATION'),
-        os: validate_env('OS_VERSION'),
-        output_directory: sourcedir,
-        packer_vars: {},
-        version: version,
-        enable_rdp: ENV['ENABLE_RDP'] ? (ENV['ENABLE_RDP'].downcase == 'true') : false,
-        enable_kms: ENV['ENABLE_KMS'] ? (ENV['ENABLE_KMS'].downcase == 'true') : false,
-        kms_host: ENV.fetch('KMS_HOST', ''),
-        skip_windows_update: ENV['SKIP_WINDOWS_UPDATE']
-      )
-
-      vcenter.build
     end
   end
 end
