@@ -104,7 +104,7 @@ module S3
     def put(vmx_dir, version)
       version = version.scan(/(\d+)\./).flatten.first
       version = (version.to_i + 1).to_s
-      vmx_tarball = File.join(@vmx_cache_dir,"vmx-v#{version}.tgz")
+      vmx_tarball = File.join(@vmx_cache_dir, "vmx-v#{version}.tgz")
       Dir.chdir(vmx_dir) do
         exec_command("tar -czvf #{vmx_tarball} *")
       end
@@ -123,6 +123,25 @@ module S3
         raise "Too many vmx files in directory: #{files}"
       end
       return files[0]
+    end
+  end
+
+  class VCenter
+    def initialize(
+      output_bucket:, vcenter_cache_dir:, endpoint: "")
+      @client = S3::Client.new(endpoint: endpoint)
+      @output_bucket = output_bucket
+      @vcenter_cache_dir = vcenter_cache_dir
+    end
+
+    def put(vcenter_dir, version)
+      version = version.scan(/(\d+)\./).flatten.first
+      version = (version.to_i + 1).to_s
+      vcenter_tarball = File.join(@vcenter_cache_dir, "vcenter-v#{version}.tgz")
+      Dir.chdir(vcenter_dir) do
+        exec_command("tar -czvf #{vcenter_tarball} *")
+      end
+      @client.put(@output_bucket, "vcenter-v#{version}.tgz", vcenter_tarball)
     end
   end
 

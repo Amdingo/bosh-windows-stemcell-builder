@@ -184,4 +184,60 @@ namespace :build do
     s3_client = S3::Client.new(endpoint: ENV["S3_ENDPOINT"])
     s3_client.put(Stemcell::Builder::validate_env("OUTPUT_BUCKET"),File.basename(stemcell),stemcell)
   end
+
+  desc 'Build VSphere Stemcell In VCenter'
+  task :vsphere_vcenter do
+    build_dir = File.expand_path('../../../../build', __FILE__)
+
+    version_dir = Stemcell::Builder::validate_env_dir('VERSION_DIR')
+    from_template_version_dir = Stemcell::Builder::validate_env_dir('VCENTER_VERSION_DIR')
+    output_bucket = Stemcell::Builder::validate_env('OUTPUT_BUCKET')
+
+    S3.test_upload_permissions(output_bucket, ENV['S3_ENDPOINT'])
+
+    skip_windows_update = ENV.fetch('SKIP_WINDOWS_UPDATE', 'false').downcase == 'true'
+
+    version = File.read(File.join(version_dir, 'number')).chomp
+    from_template_version = File.read(File.join(from_template_version_dir, 'number')).chomp
+    agent_commit = File.read(File.join(build_dir, 'compiled-agent', 'sha')).chomp
+
+    output_directory = File.absolute_path('bosh-windows-stemcell')
+    FileUtils.rm_rf('bosh-windows-stemcell')
+
+    from_template = S3::VCenter.new(
+      output_bucket: output_bucket,
+      from_template_cache_dir: Stemcell::Builder::validate_env('VCENTER_CACHE_DIR'),
+      endpoint: ENV['S3_ENDPOINT']
+    )
+
+    administrator_password = Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD')
+
+    vsphere = Stemcell::Builder::VCenter.new(
+      mem_size: ENV.fetch('MEM_SIZE', '4096'),
+      num_vcpus: ENV.fetch('NUM_VCPUS', '4'),
+      source_path: source_path,
+      agent_commit: agent_commit,
+      administrator_password: administrator_password,
+      new_password: ENV.fetch('NEW_PASSWORD', administrator_password),
+      product_key: ENV['PRODUCT_KEY'],
+      owner: Stemcell::Builder::validate_env('OWNER'),
+      organization: Stemcell::Builder::validate_env('ORGANIZATION'),
+      os: Stemcell::Builder::validate_env('OS_VERSION'),
+      output_directory: output_directory,
+      packer_vars: {},
+      version: version,
+      enable_rdp: ENV.fetch('ENABLE_RDP', 'false').downcase == 'true',
+      skip_windows_update: skip_windows_update,
+      http_proxy: ENV.fetch('UPDATES_HTTP_PROXY', ''),
+      https_proxy: ENV.fetch('UPDATES_HTTPS_PROXY', ''),
+      bypass_list: ENV.fetch('UPDATES_PROXY_BYPASS_LIST', '')
+    )
+
+    vsphere.build
+
+    pattern = File.join(output_directory, '*.tgz').gsub('\\', '/')
+    stemcell = Dir.glob(pattern)[0]
+    s3_client = S3::Client.new(endpoint: ENV['S3_ENDPOINT'])
+    s3_client.put(Stemcell::Builder::validate_env('OUTPUT_BUCKET'),File.basename(stemcell),stemcell)
+  end
 end

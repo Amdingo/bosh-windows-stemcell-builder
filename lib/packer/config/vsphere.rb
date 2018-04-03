@@ -67,6 +67,71 @@ module Packer
       end
     end
 
+    class VSphereVCenter < VSphereBase
+      def initialize(product_key:,
+                     owner:,
+                     organization:,
+                     enable_rdp:,
+                     new_password:,
+                     **args)
+        @product_key = product_key
+        @owner = owner
+        @organization = organization
+        @enable_rdp = enable_rdp
+        @new_password = new_password
+        super(args)
+      end
+
+      def builders
+        @server = ENV.fetch('VCENTER_SERVER')
+        @username = ENV.fetch('VCENTER_USERNAME')
+        @password = ENV.fetch('VCENTER_PASSWORD')
+        @datacenter = ENV.fetch('VCENTER_DATACENTER')
+        enable_rdp = @enable_rdp ? ' -EnableRdp' : ''
+        product_key_flag = @product_key.to_s.empty? ? '' : " -ProductKey #{@product_key}"
+        [
+          'type' => 'vsphere',
+          'vcenter_server' => @server,
+          'username' => @username,
+          'password' => @password,
+          'datacenter' => @datacenter,
+          'insecure_connection' => 'false',
+          'template' => 'scyther/windows1709stemcelltemplate',
+          'folder' => 'scyther',
+          'shutdown_command' => "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command Invoke-Sysprep -IaaS vsphere -NewPassword #{@new_password}#{product_key_flag} -Owner #{@owner} -Organization #{@organization}#{enable_rdp}",
+          'shutdown_timeout' => '1h',
+          'communicator' => 'winrm',
+          'ssh_username' => 'Administrator',
+          'ssh_password' => '',
+          'winrm_username' => 'Administrator',
+          'winrm_password' => '',
+          'winrm_timeout' => '1h',
+          'winrm_insecure' => true,
+          'vm_name' =>  'packer-vmx',
+          'RAM' => '4096',
+          'CPUs' => '4',
+          'displayname' => "packer-vmx-#{@timestamp}",
+          'skip_clean_files' => true,
+          'convert_to_template' => true
+        ]
+      end
+
+      def provisioners
+        pre = [
+            Base.pre_provisioners(@os, skip_windows_update: @skip_windows_update, http_proxy: @http_proxy, https_proxy: @https_proxy, bypass_list: @bypass_list),
+            Provisioners::lgpo_exe,
+            Provisioners.install_agent('vsphere').freeze,
+        ]
+        download_windows_updates = @skip_windows_update?[]:[Provisioners.download_windows_updates(@output_directory).freeze]
+
+        post = [Base.post_provisioners('vsphere')]
+
+        [pre,
+         download_windows_updates,
+         post].flatten
+      end
+    end
+
     class VSphere < VSphereBase
       def initialize(product_key:,
                      owner:,
