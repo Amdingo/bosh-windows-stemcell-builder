@@ -170,7 +170,6 @@ module Stemcell
       end
 
       private
-      ENV.fetch
       # a template needs to be availeble of the windows2012 first with winrm enabled
       def packer_config
         JSON.dump(JSON.parse(super).tap do |config|
