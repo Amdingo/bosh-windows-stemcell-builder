@@ -106,10 +106,10 @@ module Packer
           'winrm_password' => '',
           'winrm_timeout' => '1h',
           'winrm_insecure' => true,
-          'vm_name' =>  'packer-vmx',
+          'vm_name' =>  'packer-vcenter',
           'RAM' => '4096',
           'CPUs' => '4',
-          'displayname' => "packer-vmx-#{@timestamp}",
+          'displayname' => "packer-vcenter-#{@timestamp}",
           'skip_clean_files' => true,
           'convert_to_template' => true
         ]
