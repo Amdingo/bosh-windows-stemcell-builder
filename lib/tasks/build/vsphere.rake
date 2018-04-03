@@ -197,7 +197,6 @@ namespace :build do
     skip_windows_update = ENV.fetch('SKIP_WINDOWS_UPDATE', 'false').downcase == 'true'
 
     version = File.read(File.join(version_dir, 'number')).chomp
-    from_template_version = File.read(File.join(from_template_version_dir, 'number')).chomp
     agent_commit = File.read(File.join(build_dir, 'compiled-agent', 'sha')).chomp
 
     output_directory = File.absolute_path('bosh-windows-stemcell')
