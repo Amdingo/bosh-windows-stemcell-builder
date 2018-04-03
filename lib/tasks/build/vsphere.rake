@@ -190,7 +190,6 @@ namespace :build do
     build_dir = File.expand_path('../../../../build', __FILE__)
 
     version_dir = Stemcell::Builder::validate_env_dir('VERSION_DIR')
-    from_template_version_dir = Stemcell::Builder::validate_env_dir('VCENTER_VERSION_DIR')
     output_bucket = Stemcell::Builder::validate_env('OUTPUT_BUCKET')
 
     S3.test_upload_permissions(output_bucket, ENV['S3_ENDPOINT'])
