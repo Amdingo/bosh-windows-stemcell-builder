@@ -170,33 +170,33 @@ module Stemcell
       end
 
       private
-
+      ENV.fetch
       # a template needs to be availeble of the windows2012 first with winrm enabled
       def packer_config
         JSON.dump(JSON.parse(super).tap do |config|
           config['builders'] = [
             {
               'type' => 'vsphere',
-              'vcenter_server' => validate_env('VCENTER_SERVER'),
-              'username' => validate_env('VCENTER_USERNAME'),
-              'password' => validate_env('VCENTER_PASSWORD'),
+              'vcenter_server' => Stemcell::Builder::validate_env('VCENTER_SERVER'),
+              'username' => Stemcell::Builder::validate_env('VCENTER_USERNAME'),
+              'password' => Stemcell::Builder::validate_env('VCENTER_PASSWORD'),
               'insecure_connection' => true,
-              'template' => validate_env('BASE_TEMPLATE'),
-              'folder' => validate_env('VCENTER_VM_FOLDER'),
+              'template' => Stemcell::Builder::validate_env('BASE_TEMPLATE'),
+              'folder' => Stemcell::Builder::validate_env('VCENTER_VM_FOLDER'),
               'vm_name' => 'packer-vcenter',
-              'host' => validate_env('VCENTER_HOST'),
-              'datastore' => validate_env('VCENTER_DATASTORE'),
+              'host' => Stemcell::Builder::validate_env('VCENTER_HOST'),
+              'datastore' => Stemcell::Builder::validate_env('VCENTER_DATASTORE'),
               'resource_pool' => '',
               'ssh_username' => 'Administrator',
-              'ssh_password' => validate_env('ADMINISTRATOR_PASSWORD'),
+              'ssh_password' => Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD'),
               'communicator' => 'winrm',
               'winrm_username' => 'Administrator',
-              'winrm_password' => validate_env('ADMINISTRATOR_PASSWORD'),
+              'winrm_password' => Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD'),
               'winrm_timeout' => '3h',
               'winrm_insecure' => true,
-              'CPUs' => ENV.fetch('NUM_VCPUS', '4'),
-              'RAM'  => ENV.fetch('MEM_SIZE', '4096'),
-              'datacenter' => ENV.fetch('VCENTER_DATACENTER')
+              'CPUs' => Stemcell::Builder::validate_env('NUM_VCPUS', '4'),
+              'RAM'  => Stemcell::Builder::validate_env('MEM_SIZE', '4096'),
+              'datacenter' => Stemcell::Builder::validate_env('VCENTER_DATACENTER')
             }
           ]
         end)
