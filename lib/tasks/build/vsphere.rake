@@ -202,17 +202,18 @@ namespace :build do
     output_directory = File.absolute_path('bosh-windows-stemcell')
     FileUtils.rm_rf('bosh-windows-stemcell')
 
-    vcenter_s3 = S3::VCenter.new(
-      output_bucket: output_bucket,
-      vcenter_cache_dir: Stemcell::Builder::validate_env('VCENTER_CACHE_DIR'),
-      endpoint: ENV['S3_ENDPOINT']
-    )
+    # vcenter_s3 = S3::VCenter.new(
+    #   output_bucket: output_bucket,
+    #   vcenter_cache_dir: Stemcell::Builder::validate_env('VCENTER_CACHE_DIR'),
+    #   endpoint: ENV['S3_ENDPOINT']
+    # )
 
     administrator_password = Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD')
 
     vcenter = Stemcell::Builder::VCenter.new(
       mem_size: ENV.fetch('MEM_SIZE', '4096'),
       num_vcpus: ENV.fetch('NUM_VCPUS', '4'),
+      source_path: '',
       agent_commit: agent_commit,
       administrator_password: administrator_password,
       new_password: ENV.fetch('NEW_PASSWORD', administrator_password),
