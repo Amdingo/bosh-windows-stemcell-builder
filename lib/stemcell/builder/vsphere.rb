@@ -172,6 +172,9 @@ module Stemcell
       private
       # a template needs to be availeble of the windows2012 first with winrm enabled
       def packer_config
+        server = Stemcell::Builder::validate_env('VCENTER_SERVER')
+        puts "\tVCENTER SERVIETTE = #{server}"
+
         JSON.dump(JSON.parse(super).tap do |config|
           config['builders'] = [
             {
