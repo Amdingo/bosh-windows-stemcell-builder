@@ -179,7 +179,7 @@ module Stemcell
           config['builders'] = [
             {
               'type' => 'vsphere',
-              'vcenter_server' => 'foooooooo', #Stemcell::Builder::validate_env('VCENTER_SERVER'),
+              'vcenter_server' => Stemcell::Builder::validate_env('VCENTER_SERVER'),
               'username' => Stemcell::Builder::validate_env('VCENTER_USERNAME'),
               'password' => Stemcell::Builder::validate_env('VCENTER_PASSWORD'),
               'insecure_connection' => true,
