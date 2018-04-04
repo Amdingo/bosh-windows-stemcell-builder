@@ -193,8 +193,8 @@ module Stemcell
               'winrm_password' => Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD'),
               'winrm_timeout' => '3h',
               'winrm_insecure' => true,
-              'CPUs' => Stemcell::Builder::validate_env('NUM_VCPUS', '4'),
-              'RAM'  => Stemcell::Builder::validate_env('MEM_SIZE', '4096'),
+              'CPUs' => ENV.fetch('NUM_VCPUS', '4'),
+              'RAM'  => ENV.fetch('MEM_SIZE', '4096'),
               'datacenter' => Stemcell::Builder::validate_env('VCENTER_DATACENTER')
             }
           ]
