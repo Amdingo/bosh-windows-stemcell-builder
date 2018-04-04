@@ -172,9 +172,6 @@ module Stemcell
       private
       # a template needs to be availeble of the windows2012 first with winrm enabled
       def packer_config
-        server = Stemcell::Builder::validate_env('VCENTER_SERVER')
-        puts "\tVCENTER SERVIETTE = #{server}"
-
         JSON.dump(JSON.parse(super).tap do |config|
           config['builders'] = [
             {
@@ -204,8 +201,8 @@ module Stemcell
         end)
       end
 
-      # we can change this when govmami has the export feature https://github.com/vmware/govmomi/pull/813 or maby intergrate
-      # in vpshere plugin see https://github.com/jetbrains-infra/packer-builder-vsphere/issues/34
+      # we can change this when govmami has the export feature https://github.com/vmware/govmomi/pull/813
+      # or maybe intergrate in vpshere plugin see https://github.com/jetbrains-infra/packer-builder-vsphere/issues/34
       def export_vmdk
         folder = Stemcell::Builder::validate_env('VCENTER_VM_FOLDER')
         host_folder = Stemcell::Builder::validate_env('VCENTER_HOST_FOLDER')
