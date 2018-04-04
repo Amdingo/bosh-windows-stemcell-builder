@@ -201,7 +201,6 @@ module Stemcell
         end)
       end
 
-      $dir = '/root' # Dir.pwd
       # we can change this when govmami has the export feature https://github.com/vmware/govmomi/pull/813 or maby intergrate
       # in vpshere plugin see https://github.com/jetbrains-infra/packer-builder-vsphere/issues/34
       def export_vmdk
@@ -210,7 +209,7 @@ module Stemcell
         server = Stemcell::Builder::validate_env('VCENTER_SERVER')
         username = Stemcell::Builder::validate_env('VCENTER_USERNAME')
         password = Stemcell::Builder::validate_env('VCENTER_PASSWORD')
-        cmd = "ovftool --noSSLVerify --machineOutput \"vi://#{username}:#{password}@#{server}/#{host_folder}/vm/#{folder}/packer-vcenter/\" #{$dir}/"
+        cmd = "ovftool --noSSLVerify --machineOutput \"vi://#{username}:#{password}@#{server}/#{host_folder}/vm/#{folder}/packer-vcenter/\" /root/"
         puts cmd
         Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
           while line=stdout.gets || line=stderr.gets do

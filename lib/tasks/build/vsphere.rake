@@ -202,15 +202,15 @@ namespace :build do
     output_directory = File.absolute_path('bosh-windows-stemcell')
     FileUtils.rm_rf('bosh-windows-stemcell')
 
-    from_template = S3::VCenter.new(
+    vcenter_s3 = S3::VCenter.new(
       output_bucket: output_bucket,
-      from_template_cache_dir: Stemcell::Builder::validate_env('VCENTER_CACHE_DIR'),
+      vcenter_cache_dir: Stemcell::Builder::validate_env('VCENTER_CACHE_DIR'),
       endpoint: ENV['S3_ENDPOINT']
     )
 
     administrator_password = Stemcell::Builder::validate_env('ADMINISTRATOR_PASSWORD')
 
-    vsphere = Stemcell::Builder::VCenter.new(
+    vcenter = Stemcell::Builder::VCenter.new(
       mem_size: ENV.fetch('MEM_SIZE', '4096'),
       num_vcpus: ENV.fetch('NUM_VCPUS', '4'),
       agent_commit: agent_commit,
@@ -230,7 +230,7 @@ namespace :build do
       bypass_list: ENV.fetch('UPDATES_PROXY_BYPASS_LIST', '')
     )
 
-    vsphere.build
+    vcenter.build
 
     pattern = File.join(output_directory, '*.tgz').gsub('\\', '/')
     stemcell = Dir.glob(pattern)[0]
