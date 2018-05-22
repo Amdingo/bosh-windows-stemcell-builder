@@ -23,6 +23,7 @@ Describe "Account" {
         $password = "Password123!"
 
         Add-Account -User $user -Password $password
+        mkdir "C:\Users\$user"
         $adsi = [ADSI]"WinNT://$env:COMPUTERNAME"
         $existing = $adsi.Children | where {$_.SchemaClassName -eq 'user' -and $_.Name -eq $user }
         $existing | Should Not Be $null
