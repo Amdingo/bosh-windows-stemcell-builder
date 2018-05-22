@@ -104,8 +104,8 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir -IaaS openstack } | Should Not Throw
             $configPath = (Join-Path $boshDir "agent.json")
             Test-Path $configPath | Should Be $True
-            ($configPath) | Should Contain ([regex]::Escape('"SSHKeysPath": "/latest/meta-data/public-keys/0/openssh-key/"'))
-            ($configPath) | Should Contain ([regex]::Escape('"UseServerName": true'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"SSHKeysPath": "/latest/meta-data/public-keys/0/openssh-key/"'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"UseServerName": true'))
         }
     }
 
@@ -114,9 +114,9 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir -IaaS azure } | Should Not Throw
             $configPath = (Join-Path $boshDir "agent.json")
             Test-Path $configPath | Should Be $True
-            ($configPath) | Should Contain ([regex]::Escape('"SettingsPath": "C:/AzureData/CustomData.bin"'))
-            ($configPath) | Should Contain ([regex]::Escape('"MetaDataPath": "C:/AzureData/CustomData.bin"'))
-            ($configPath) | Should Contain ([regex]::Escape('"UseServerName": false'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"SettingsPath": "C:/AzureData/CustomData.bin"'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"MetaDataPath": "C:/AzureData/CustomData.bin"'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"UseServerName": false'))
         }
     }
 
@@ -125,7 +125,7 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir -IaaS gcp } | Should Not Throw
             $configPath = (Join-Path $boshDir "agent.json")
             Test-Path $configPath | Should Be $True
-            ($configPath) | Should Contain ([regex]::Escape('"Metadata-Flavor": "Google"'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"Metadata-Flavor": "Google"'))
         }
     }
     Context "when IaaS is 'vsphere'" {
@@ -133,7 +133,7 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir -IaaS vsphere } | Should Not Throw
             $configPath = (Join-Path $boshDir "agent.json")
             Test-Path $configPath | Should Be $True
-            ($configPath) | Should Contain ([regex]::Escape('"Type": "CDROM"'))
+            ($configPath) | Should -FileContentMatch ([regex]::Escape('"Type": "CDROM"'))
         }
     }
 }
