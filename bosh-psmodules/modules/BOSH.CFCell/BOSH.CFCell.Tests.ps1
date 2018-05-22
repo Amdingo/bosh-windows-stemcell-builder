@@ -5,6 +5,9 @@ Remove-Module -Name BOSH.Utils -ErrorAction Ignore
 Import-Module ../BOSH.Utils/BOSH.Utils.psm1
 
 Describe "Protect-CFCell" {
+    BeforeEach {
+        Start-Service winrm
+    }
     It "enables the RDP service and firewall rule" {
        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 1
        netstat /p tcp /a | findstr 3389 | Should BeNullOrEmpty
