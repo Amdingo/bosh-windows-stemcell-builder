@@ -5,11 +5,14 @@ Remove-Module -Name BOSH.Utils -ErrorAction Ignore
 Import-Module ../BOSH.Utils/BOSH.Utils.psm1
 
 Describe "Disable-AutomaticUpdates" {
+    $oldWuauStartMode = ""
+
     BeforeEach {
+        $fubar = "blah"
         $oldWuauStatus = (Get-Service -Name "wuauserv").Status
         { Set-Service -Name wuauserv -Status "Running" } | Should Not Throw
+
         $oldWuauStartMode = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='wuauserv'").StartMode
-        Write-Log "BeforeEach - $oldWuauStartMode -"
 
         $oldAUOptions = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update').AUOptions
         $oldEnableFeaturedSoftware = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update').EnableFeaturedSoftware
@@ -22,6 +25,7 @@ Describe "Disable-AutomaticUpdates" {
     }
 
     AfterEach {
+        Write-Log $fubar
         if ($oldAUOptions -eq "") {
             Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update' -Name 'AUOptions'
         } else {
@@ -40,7 +44,6 @@ Describe "Disable-AutomaticUpdates" {
             Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update' -Value $oldAUOptions -Name 'IncludeRecommendedUpdates'
         }
 
-        Write-Log "AfterEach - $oldWuauStartMode -"
         { Set-Service -Name wuauserv -StartupType $oldWuauStartMode } | Should Not Throw
         { Set-Service -Name wuauserv -Status $oldWuauStatus } | Should Not Throw
     }
