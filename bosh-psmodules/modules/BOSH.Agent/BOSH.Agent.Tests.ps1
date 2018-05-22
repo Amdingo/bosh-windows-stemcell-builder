@@ -60,11 +60,11 @@ Describe "Copy-Agent" {
 
 Describe "Write-AgentConfig" {
     BeforeEach {
-	    $boshDir=(New-TempDir)
+        $boshDir=(New-TempDir)
     }
 
     AfterEach {
-	    Remove-Item -Recurse -Force $boshDir
+        Remove-Item -Recurse -Force $boshDir
     }
 
     Context "when IaaS is not provided" {
@@ -72,17 +72,19 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir } | Should Throw "Provide an IaaS for configuration"
         }
     }
+
     Context "when IaaS is not supported" {
-	    It "throws" {
-	        { Write-AgentConfig -BoshDir $boshDir -IaaS idontexist } | Should Throw "IaaS idontexist is not supported"
-	    }
+        It "throws" {
+	   { Write-AgentConfig -BoshDir $boshDir -IaaS idontexist } | Should Throw "IaaS idontexist is not supported"
+        }
     }
 
     Context "when boshDir is not provided" {
-	    It "throws" {
-	        { Write-AgentConfig -IaaS aws } | Should Throw "Provide a directory to install the BOSH agent config"
-	    }
+        It "throws" {
+            { Write-AgentConfig -IaaS aws } | Should Throw "Provide a directory to install the BOSH agent config"
+        }
     }
+
     Context "when provided a nonexistent directory" {
         It "throws" {
             { Write-AgentConfig -BoshDir "nonexistent-dir" -IaaS aws } | Should Throw "Error: nonexistent-dir does not exist"
@@ -94,7 +96,6 @@ Describe "Write-AgentConfig" {
             { Write-AgentConfig -BoshDir $boshDir -IaaS aws } | Should Not Throw
             $configPath = (Join-Path $boshDir "agent.json")
             Test-Path $configPath | Should Be $True
-            ($configPath) | Should Contain ([regex]::Escape('"SSHKeysPath": "/latest/meta-data/public-keys/0/openssh-key/"'))
         }
     }
 
