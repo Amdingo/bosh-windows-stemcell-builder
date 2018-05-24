@@ -12,7 +12,7 @@ Describe "Disable-AutomaticUpdates" {
         $oldWuauStatus = (Get-Service -Name "wuauserv").Status
         { Set-Service -Name wuauserv -Status "Running" } | Should Not Throw
 
-        $oldWuauStartMode = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='wuauserv'").StartMode
+        $oldWuauStartMode = (Get-Service wuauserv) | Select -Property StartType
 
         $oldAUOptions = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update').AUOptions
         $oldEnableFeaturedSoftware = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update').EnableFeaturedSoftware
