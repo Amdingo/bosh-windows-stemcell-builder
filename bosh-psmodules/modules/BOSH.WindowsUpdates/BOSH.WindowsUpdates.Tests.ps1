@@ -44,7 +44,7 @@ Describe "Disable-AutomaticUpdates" {
             Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update' -Value $oldAUOptions -Name 'IncludeRecommendedUpdates'
         }
 
-        { Set-Service -Name wuauserv -StartupType $oldWuauStartMode } | Should Not Throw
+        { Set-Service -Name wuauserv -StartupType Disabled } | Should Not Throw
         { Set-Service -Name wuauserv -Status $oldWuauStatus } | Should Not Throw
     }
 
