@@ -190,7 +190,7 @@ Describe "Install-Agent" {
         Mock -Verifiable -ModuleName BOSH.Agent Protect-Dir {} -ParameterFilter { $path -eq "C:\Windows\Panther" -and $disableInheritance -eq $false }
 
         Mock -Verifiable -ModuleName BOSH.Agent Write-AgentConfig {} -ParameterFilter { $IaaS -eq "aws" -and $BoshDir -eq "C:\bosh" }
-        Mock -Verifiable -ModuleName BOSH.Agent Set-Path {} -ParameterFilter { $Path -eq "C:\var\vcap\bosh\bin }
+        Mock -Verifiable -ModuleName BOSH.Agent Set-Path {} -ParameterFilter { $Path -eq "C:\var\vcap\bosh\bin" }
         Mock -Verifiable -ModuleName BOSH.Agent Install-AgentService {}
         Install-Agent -IaaS aws -agentZipPath "some-agent-zip-path"
         Assert-VerifiableMock
