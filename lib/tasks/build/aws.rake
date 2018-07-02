@@ -127,7 +127,14 @@ end
 def get_aws_builder(output_directory, region, base_amis=[])
   version_dir = Stemcell::Builder::validate_env_dir('VERSION_DIR')
 
-  build_dir = File.expand_path('../../../../build', __FILE__)
+  base_dir_location = ENV['BUILD_BASE_DIR']
+  if base_dir_location == ""
+      base_dir_location = '../../../../'
+  end
+
+  base_dir = File.expand_path(base_dir_location, __FILE__)
+
+  build_dir = File.join(base_dir, 'build')
   agent_dir = File.join(build_dir,'compiled-agent')
   version = File.read(File.join(version_dir, 'number')).chomp
   agent_commit = File.read(File.join(agent_dir, 'sha')).chomp

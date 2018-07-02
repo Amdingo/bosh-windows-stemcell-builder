@@ -15,6 +15,8 @@ module Packer
         }
       end
 
+      stemcell_builder_dir = File.expand_path('../../../../', __FILE__)
+
       BOSH_PSMODULES = [
         {
           'type' => 'file',
@@ -22,7 +24,7 @@ module Packer
           'destination' => 'C:\\provision\\bosh-psmodules.zip'
         }, {
           'type' => 'powershell',
-          'scripts' => ['scripts/install-bosh-psmodules.ps1']
+          'scripts' => [File.join(stemcell_builder_dir, 'scripts', 'install-bosh-psmodules.ps1')]
         }
       ].freeze
       NEW_PROVISIONER = powershell_provisioner('New-Provisioner')
@@ -99,10 +101,17 @@ module Packer
         ]
       end
 
+      base_dir_location = ENV['BUILD_BASE_DIR'] || ""
+      if base_dir_location == ""
+          base_dir_location = '../../../../'
+      end
+
+      base_dir = File.expand_path(base_dir_location, __FILE__)
+
       INSTALL_SSHD = [
         {
           'type' => 'file',
-          'source' => '../sshd/OpenSSH-Win64.zip',
+          'source' => File.join(base_dir, 'sshd', 'OpenSSH-Win64.zip'),
           'destination' => 'C:\\provision\\OpenSSH-Win64.zip'
         },
         powershell_provisioner("Install-SSHD -SSHZipFile 'C:\\provision\\OpenSSH-Win64.zip'")
