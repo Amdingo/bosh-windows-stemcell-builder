@@ -61,7 +61,6 @@ function Install-CFFeatures2016 {
 
   WindowsFeatureInstall("FS-Resource-Manager")
   WindowsFeatureInstall("Containers")
-  Remove-WindowsFeature Windows-Defender-Features
 
   Write-Log "Installed CloudFoundry Cell Windows 2016 Features"
 
