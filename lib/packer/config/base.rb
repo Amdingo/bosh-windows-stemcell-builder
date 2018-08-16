@@ -37,8 +37,7 @@ module Packer
 
       def self.post_provisioners(iaas, os='windows2012R2')
         provisioners = [
-          Provisioners::CLEAR_PROXY_SETTINGS,
-          Provisioners::CLEAR_PROVISIONER
+          Provisioners::CLEAR_PROXY_SETTINGS
         ]
 
         if iaas.downcase != 'vsphere'
