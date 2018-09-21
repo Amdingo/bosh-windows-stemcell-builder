@@ -122,8 +122,8 @@ GEM
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.4)
-    unf_ext (0.0.7.4-x64-mingw32)
+    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.5-x64-mingw32)
     webmock (2.3.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
