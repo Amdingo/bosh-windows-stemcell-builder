@@ -23,11 +23,11 @@ namespace :build do
 
     # Get input amis from Amazon
     base_amis = [{
-        name: "cn-north-1",
-        base_ami: "ami-08d57c703910e03d4",
-        vpc_id: "vpc-f025bd95",
-        subnet_id: "subnet-e5b5bb91",
-        security_group:"sg-88a96ced"
+        'name' =>  "cn-north-1",
+        'base_ami' => "ami-08d57c703910e03d4",
+        'vpc_id' => "vpc-f025bd95",
+        'subnet_id' => "subnet-e5b5bb91",
+        'security_group' => "sg-88a96ced",
     }]
     puts "base_amis.count: #{base_amis.count}"
 
