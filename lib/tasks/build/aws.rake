@@ -22,11 +22,7 @@ namespace :build do
     ami_output_directory = Stemcell::Builder::validate_env_dir('AMIS_DIR')
 
     # Get input amis from Amazon
-    base_amis = JSON.parse(
-      File.read(
-        Dir.glob(File.join(base_amis_dir, 'base-amis-*.json'))[0]
-      ).chomp
-    ).select { |ami| ami['name'] == region }
+    base_amis = ["ami-08d57c703910e03d4"]
     puts "base_amis.count: #{base_amis.count}"
 
     # Create stemcell
