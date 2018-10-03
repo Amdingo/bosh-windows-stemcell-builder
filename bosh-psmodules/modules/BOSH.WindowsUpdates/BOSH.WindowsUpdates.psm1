@@ -408,3 +408,19 @@ function Enable-CredSSP() {
     #Policy set to "mitigated"
     reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters" /v AllowEncryptionOracle /t REG_DWORD /d 1 /f
 }
+
+function Upgrade-PSVersion () {
+    if (Get-PSVersion) {
+        return
+    }
+
+    $OutPath = "C:\provision\PS51.msu"
+    Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=839516" -UseBasicParsing -OutFile $OutPath
+
+    Start-Process -FilePath $OutPath -ArgumentList "/quiet /forcedrestart" -Wait -PassThru
+}
+
+function Get-PSVersion {
+    $version = $PSVersionTable.PSVersion
+    $version.Major -ge 5
+}

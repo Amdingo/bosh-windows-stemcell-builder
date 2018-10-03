@@ -18,7 +18,8 @@ FunctionsToExport = @('Install-WindowsUpdates',
                       'Disable-AutomaticUpdates',
                       'Enable-CVE-2015-6161',
                       'Enable-CVE-2017-8529',
-                      'Enable-CredSSP')
+                      'Enable-CredSSP',
+                      'Upgrade-PSVersion')
 CmdletsToExport = @()
 VariablesToExport = '*'
 AliasesToExport = @()
