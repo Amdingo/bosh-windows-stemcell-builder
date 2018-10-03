@@ -52,6 +52,10 @@
   },
   {
     "type": "windows-restart",
+    "restart_command": "powershell.exe -Command Upgrade-PSVersion"
+  },
+  {
+    "type": "windows-restart",
     "restart_command": "powershell.exe -Command Wait-WindowsUpdates -Password <%= password %> -User Provisioner",
     "restart_timeout": "12h"
   },
