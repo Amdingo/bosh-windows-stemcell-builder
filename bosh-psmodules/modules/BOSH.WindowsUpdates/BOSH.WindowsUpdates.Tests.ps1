@@ -187,25 +187,25 @@ Describe "Enable-SecurityPatches" {
 
 Describe "Upgrade-PSVersion" {
     It "Only installs if powershell 5.1 or above is not installed" {
-        Mock Get-PSVersion { $true } -ModuleName BOSH.WindowsUpdates
+        Mock Test-PSVersion { $true } -ModuleName BOSH.WindowsUpdates
         Mock Invoke-WebRequest { } -ModuleName BOSH.WindowsUpdates
         Mock Start-Process { } -ModuleName BOSH.WindowsUpdates
 
         { Upgrade-PSVersion } | Should Not Throw
 
-        Assert-MockCalled Get-PSVersion -Times 1 -Scope It -ModuleName BOSH.WindowsUpdates
+        Assert-MockCalled Test-PSVersion -Times 1 -Scope It -ModuleName BOSH.WindowsUpdates
         Assert-MockCalled Invoke-WebRequest -Times 0 -Scope It -ModuleName BOSH.WindowsUpdates
         Assert-MockCalled Start-Process -Times 0 -Scope It -ModuleName BOSH.WindowsUpdates
     }
 
     It "Only installs if powershell 5.1 or above is not installed" {
-        Mock Get-PSVersion { $false } -ModuleName BOSH.WindowsUpdates
+        Mock Test-PSVersion { $false } -ModuleName BOSH.WindowsUpdates
         Mock Invoke-WebRequest { } -ModuleName BOSH.WindowsUpdates
         Mock Start-Process { } -ModuleName BOSH.WindowsUpdates
 
         { Upgrade-PSVersion } | Should Not Throw
 
-        Assert-MockCalled Get-PSVersion -Times 1 -Scope It -ModuleName BOSH.WindowsUpdates
+        Assert-MockCalled Test-PSVersion -Times 1 -Scope It -ModuleName BOSH.WindowsUpdates
         Assert-MockCalled Invoke-WebRequest -Times 1 -Scope It -ParameterFilter { $Uri -eq "https://go.microsoft.com/fwlink/?linkid=839516" -and $Outfile -eq "C:\provision\PS51.msu" -and $UseBasicParsing.IsPresent } -ModuleName BOSH.WindowsUpdates
         Assert-MockCalled Start-Process -Times 1 -Scope It -ParameterFilter { $FilePath -eq "C:\provision\PS51.msu" -and $ArgumentList -eq "/quiet /forcedrestart" -and $Wait.IsPresent -and $Passthru.IsPresent } -ModuleName BOSH.WindowsUpdates
     }

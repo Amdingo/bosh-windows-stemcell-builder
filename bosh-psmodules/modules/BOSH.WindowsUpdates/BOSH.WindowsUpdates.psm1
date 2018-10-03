@@ -410,17 +410,23 @@ function Enable-CredSSP() {
 }
 
 function Upgrade-PSVersion () {
-    if (Get-PSVersion) {
+    if (Test-PSVersion) {
+        Write-Log "Upgrade-PSVersion: No need to upgrade. PSVersion is 5 or above"
         return
     }
+
+    Write-Log "Upgrade-PSVersion: Downloading."
 
     $OutPath = "C:\provision\PS51.msu"
     Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=839516" -UseBasicParsing -OutFile $OutPath
 
+    Write-Log "Upgrade-PSVersion: Downloaded. Installing."
+
     Start-Process -FilePath $OutPath -ArgumentList "/quiet /forcedrestart" -Wait -PassThru
+    Write-Log "Upgrade-PSVersion: Installed."
 }
 
-function Get-PSVersion {
+function Test-PSVersion {
     $version = $PSVersionTable.PSVersion
     $version.Major -ge 5
 }
