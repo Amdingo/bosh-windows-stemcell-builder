@@ -26,9 +26,16 @@
       "New-Provisioner"
     ]
   },
+    {
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Upgrade-PSVersion"
+    ]
+  },
   {
-    "type": "windows-restart",
-    "restart_command": "powershell.exe -Command Upgrade-PSVersion",
+    "type": "windows-restart"
   },
   {
     "type": "powershell",

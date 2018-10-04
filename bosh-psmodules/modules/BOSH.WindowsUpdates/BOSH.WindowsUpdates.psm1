@@ -425,9 +425,8 @@ function Upgrade-PSVersion () {
     Write-Log "Upgrade-PSVersion: Downloaded. Installing."
 
     Start-Process -FilePath $OutPath -ArgumentList "/quiet /norestart" -Wait -PassThru
-    Write-Log "Upgrade-PSVersion: Installed. Restarting."
+    Write-Log "Upgrade-PSVersion: Installed."
     [Net.ServicePointManager]::SecurityProtocol = $existingProtocol
-    Restart-Computer
 }
 
 function Test-PSVersion {
