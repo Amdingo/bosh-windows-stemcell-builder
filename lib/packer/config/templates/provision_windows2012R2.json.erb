@@ -35,7 +35,12 @@
     ]
   },
   {
-    "type": "windows-restart"
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Test-PSVersion"
+    ]
   },
   {
     "type": "powershell",
