@@ -422,7 +422,7 @@ function Upgrade-PSVersion () {
 
     Write-Log "Upgrade-PSVersion: Downloaded. Installing."
 
-    Start-Process -FilePath $OutPath -ArgumentList "/quiet /forcedrestart" -Wait -PassThru
+    Start-Process -FilePath $OutPath -ArgumentList "/quiet" -Wait -PassThru
     Write-Log "Upgrade-PSVersion: Installed."
 }
 
