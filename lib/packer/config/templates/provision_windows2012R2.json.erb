@@ -27,6 +27,10 @@
     ]
   },
   {
+    "type": "windows-restart",
+    "restart_command": "powershell.exe -Command Upgrade-PSVersion"
+  },
+  {
     "type": "powershell",
     "inline": [
       "$ErrorActionPreference = \"Stop\";",
@@ -49,10 +53,6 @@
       "trap { $host.SetShouldExit(1) }",
       "Register-WindowsUpdatesTask"
     ]
-  },
-  {
-    "type": "windows-restart",
-    "restart_command": "powershell.exe -Command Upgrade-PSVersion"
   },
   {
     "type": "windows-restart",
