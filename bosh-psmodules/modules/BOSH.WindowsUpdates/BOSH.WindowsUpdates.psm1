@@ -415,6 +415,8 @@ function Upgrade-PSVersion () {
         return
     }
 
+    $existingProtocol = [Net.ServicePointManager]::SecurityProtocol
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Write-Log "Upgrade-PSVersion: Downloading."
 
     $OutPath = "C:\provision\PS51.msu"
@@ -424,6 +426,7 @@ function Upgrade-PSVersion () {
 
     Start-Process -FilePath $OutPath -ArgumentList "/quiet /norestart" -Wait -PassThru
     Write-Log "Upgrade-PSVersion: Installed. Restarting."
+    [Net.ServicePointManager]::SecurityProtocol = $existingProtocol
     Restart-Computer
 }
 
