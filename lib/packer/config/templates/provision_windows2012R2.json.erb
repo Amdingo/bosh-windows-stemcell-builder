@@ -198,6 +198,14 @@
       "Clear-ProxySettings"
     ]
   },
+  {
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Clear-Provisioner"
+    ]
+  },
   <% if iaas == "vsphere" %>
   {
     "type": "powershell",
