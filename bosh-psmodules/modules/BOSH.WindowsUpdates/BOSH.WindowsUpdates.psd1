@@ -10,6 +10,8 @@ RequiredModules = @('BOSH.Utils','BOSH.WinRM','BOSH.Autologon')
 FunctionsToExport = @('Install-WindowsUpdates',
                       'Register-WindowsUpdatesTask',
                       'Unregister-WindowsUpdatesTask',
+                      'Schedule-PowershellUpgrade',
+                      'Unregister-PowershellUpgradeTask',
                       'Wait-WindowsUpdates',
                       'Test-InstalledUpdates',
                       'Install-KB4056898',
