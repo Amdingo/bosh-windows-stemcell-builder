@@ -11,10 +11,10 @@ $script:ScriptPath = $MyInvocation.MyCommand.Path
 
 function Register-WindowsUpdatesTask {
     $Prin = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
-    $action = New-ScheduledTaskAction -Execute 'Powershell.exe' `
+    $scheduledAction = New-ScheduledTaskAction -Execute 'Powershell.exe' `
     -Argument "-Command `"Install-WindowsUpdates`" "
-    $trigger =  New-ScheduledTaskTrigger -AtLogon -RandomDelay 00:00:30
-    Register-ScheduledTask -Principal $Prin -Action $action -Trigger $trigger -TaskName "InstallWindowsUpdates" -Description "InstallWindowsUpdates"
+    $scheduledTrigger =  New-ScheduledTaskTrigger -AtLogon -RandomDelay 00:00:30
+    Register-ScheduledTask -Principal $Prin -Action $scheduledAction -Trigger $scheduledTrigger -TaskName "InstallWindowsUpdates" -Description "InstallWindowsUpdates"
 }
 
 function Unregister-WindowsUpdatesTask {
@@ -419,17 +419,32 @@ function Upgrade-PSVersion () {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Write-Log "Upgrade-PSVersion: Downloading."
 
-    $OutPath = "C:\provision\PS51.msu"
-    Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=839516" -UseBasicParsing -OutFile $OutPath
+    $MSUPath = "c:\provision\PS51.msu"
+    Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=839516" -UseBasicParsing -OutFile $MSUPath
 
     Write-Log "Upgrade-PSVersion: Downloaded. Installing."
 
-    Start-Process -FilePath $OutPath -ArgumentList "/quiet /norestart" -Wait -PassThru
-    Write-Log "Upgrade-PSVersion: Installed."
+    $p = Start-Process -FilePath $MSUPath -ArgumentList '/quiet /norestart /log:"C:\provision\psupgrade.log"' -Wait -PassThru
+    Write-Log "Upgrade-PSVersion: Installed. Process exit code: $($p.ExitCode)"
     [Net.ServicePointManager]::SecurityProtocol = $existingProtocol
 }
 
+function Schedule-PowershellUpgrade() {
+    $name = "Upgrade-PSVersion"
+    $scheduledAction = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "Upgrade-PSVersion"
+    $scheduledTrigger = New-ScheduledTaskTrigger -At (Get-Date).AddMinutes(1) -Once
+    Register-ScheduledTask -TaskName $name -Action $scheduledAction -Trigger $scheduledTrigger
+}
+
+
+function Unregister-PowershellUpgradeTask {
+    $name = "Upgrade-PSVersion"
+    Unregister-ScheduledTask -TaskName $name -Confirm:$false
+}
+
+
 function Test-PSVersion {
     $version = $PSVersionTable.PSVersion
+    Write-Log "Powershell is $version"
     $version.Major -ge 5
 }

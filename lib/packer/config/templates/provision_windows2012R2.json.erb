@@ -1,24 +1,5 @@
 [
   {
-    "inline": "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))",
-    "type": "powershell"
-  },
-  {
-    "inline": "choco install powershell --allow-empty-checksums --yes",
-    "type": "powershell"
-  },
-  {
-    "type": "windows-restart"
-  },
-  {
-    "type": "powershell",
-    "inline": [
-      "$ErrorActionPreference = \"Stop\";",
-      "trap { $host.SetShouldExit(1) }",
-      "Test-PSVersion"
-    ]
-  },
-  {
     "type": "file",
     "source": "build/bosh-psmodules.zip",
     "destination": "C:\\provision\\bosh-psmodules.zip"
@@ -34,7 +15,7 @@
     "inline": [
       "$ErrorActionPreference = \"Stop\";",
       "trap { $host.SetShouldExit(1) }",
-      "Set-ProxySettings <%= proxy_settings %>"
+      "New-Provisioner"
     ]
   },
   {
@@ -42,7 +23,36 @@
     "inline": [
       "$ErrorActionPreference = \"Stop\";",
       "trap { $host.SetShouldExit(1) }",
-      "New-Provisioner"
+      "Schedule-PowershellUpgrade"
+    ]
+  },
+  {
+    "type": "windows-restart",
+    "restart_command": "powershell.exe -Command Wait-WindowsUpdates -Password <%= password %> -User Provisioner",
+    "restart_timeout": "12h"
+  },
+  {
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Unregister-PowershellUpgradeTask"
+    ]
+  },
+  {
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Test-PSVersion"
+    ]
+  },
+  {
+    "type": "powershell",
+    "inline": [
+      "$ErrorActionPreference = \"Stop\";",
+      "trap { $host.SetShouldExit(1) }",
+      "Set-ProxySettings <%= proxy_settings %>"
     ]
   },
   {
@@ -108,7 +118,7 @@
   },
   {
     "type": "file",
-    "source": "../sshd/OpenSSH-Win64.zip",
+    "source": "sshd/OpenSSH-Win64.zip",
     "destination": "C:\\provision\\OpenSSH-Win64.zip"
   },
   {
@@ -121,7 +131,7 @@
   },
   {
     "type": "file",
-    "source": "../windows-stemcell-dependencies/lgpo/LGPO.exe",
+    "source": "lgpo/LGPO.exe",
     "destination": "C:\\windows\\LGPO.exe"
   },
   {

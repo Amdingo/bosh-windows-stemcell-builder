@@ -207,10 +207,51 @@ Describe "Upgrade-PSVersion" {
 
         Assert-MockCalled Test-PSVersion -Times 1 -Scope It -ModuleName BOSH.WindowsUpdates
         Assert-MockCalled Invoke-WebRequest -Times 1 -Scope It -ParameterFilter { $Uri -eq "https://go.microsoft.com/fwlink/?linkid=839516" -and $Outfile -eq "C:\provision\PS51.msu" -and $UseBasicParsing.IsPresent } -ModuleName BOSH.WindowsUpdates
-        Assert-MockCalled Start-Process -Times 1 -Scope It -ParameterFilter { $FilePath -eq "C:\provision\PS51.msu" -and $ArgumentList -eq "/quiet /forcedrestart" -and $Wait.IsPresent -and $Passthru.IsPresent } -ModuleName BOSH.WindowsUpdates
+        Assert-MockCalled Start-Process -Times 1 -Scope It -ParameterFilter { $FilePath -eq "C:\provision\PS51.msu" -and $ArgumentList -eq '/quiet /norestart /log:"C:\provision\psupgrade.log"' -and $Wait.IsPresent -and $Passthru.IsPresent } -ModuleName BOSH.WindowsUpdates
     }
 }
 
+Describe "Schedule-PowershellUpgrade" {
+    It "registers a task to execute Upgrade-PSVersion within the next minute" {
+        Mock New-ScheduledTaskAction `
+            { New-ScheduledTaskAction -Execute "powershell" } `
+            -ModuleName BOSH.WindowsUpdates `
+            -ParameterFilter { $Execute -eq "Powershell.exe" -and $Argument -eq "Upgrade-PSVersion" }
+        Mock New-ScheduledTaskTrigger `
+            { New-ScheduledTaskTrigger -At (Get-Date).AddDays(5) -Once } `
+            -ModuleName BOSH.WindowsUpdates `
+            -ParameterFilter { $At -lt (Get-Date).AddDays(1) -and $Once.IsPresent }
+
+        Mock Register-ScheduledTask { } -ModuleName BOSH.WindowsUpdates
+
+        { Schedule-PowershellUpgrade } | Should Not Throw
+
+        Assert-MockCalled New-ScheduledTaskAction `
+            -Times 1 `
+            -Scope It `
+            -ModuleName BOSH.WindowsUpdates `
+            -ParameterFilter { $Execute -eq "Powershell.exe" -and $Argument -eq "Upgrade-PSVersion" }
+        Assert-MockCalled New-ScheduledTaskTrigger `
+            -Times 1 `
+            -Scope It `
+            -ModuleName BOSH.WindowsUpdates `
+            -ParameterFilter { $At -le (Get-Date).AddMinutes(1) -and $Once.IsPresent }
+
+        Assert-MockCalled Register-ScheduledTask `
+            -Times 1 `
+            -Scope It `
+            -ModuleName BOSH.WindowsUpdates `
+            -ParameterFilter { $TaskName -eq "Upgrade-PSVersion" -and $Action.Execute -eq "powershell" }
+    }
+}
+
+Describe "Wait-ScheduledTask" {
+    It "waits until the task named has run" {
+        $name = "task-name"
+
+        Mock Get-ScheduledTaskInfo {} -ModuleName BOSH.WindowsUpdates
+    }
+}
 
 Remove-Module -Name BOSH.WindowsUpdates -ErrorAction Ignore
 Remove-Module -Name BOSH.Utils -ErrorAction Ignore
