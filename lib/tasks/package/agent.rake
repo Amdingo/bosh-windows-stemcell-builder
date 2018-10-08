@@ -17,7 +17,7 @@ namespace :package do
     desc 'Package BOSH Agent and dependencies into agent.zip'
     task :agent do
         base_dir_location = ENV['BUILD_BASE_DIR']
-        if base_dir_location == ""
+        if base_dir_location.nil?
             base_dir_location = '../../../../'
         end
 

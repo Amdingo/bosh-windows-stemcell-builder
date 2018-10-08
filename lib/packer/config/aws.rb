@@ -16,7 +16,7 @@ module Packer
       def builders
         stemcell_builder_dir = File.expand_path('../../../../', __FILE__)
         packer_ci_private_key_location = ENV['PACKER_CI_PRIVATE_KEY_LOCATION']
-        if packer_ci_private_key_location == ''
+        if packer_ci_private_key_location.nil?
           packer_ci_private_key_location = '../packer-ci-private-key/key'
         end
         [
