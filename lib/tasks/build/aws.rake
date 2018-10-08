@@ -130,7 +130,7 @@ def get_aws_builder(output_directory, region, base_ami = '')
   version_dir = Stemcell::Builder::validate_env_dir('VERSION_DIR')
 
   base_dir_location = ENV['BUILD_BASE_DIR']
-  if base_dir_location == ""
+  if base_dir_location.nil?
       base_dir_location = '../../../../'
   end
 
